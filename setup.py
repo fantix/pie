@@ -13,7 +13,11 @@ setuptools.setup(
 
     packages=setuptools.find_packages(),
 
-    install_requires=[],
+    install_requires=[
+        'psycopg2==2.7.3.2',
+        'alembic==0.9.6',
+        'gino',
+    ],
 
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',

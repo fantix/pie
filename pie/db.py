@@ -24,4 +24,5 @@ def init_app(app: sanic.Sanic):
         except AttributeError:
             pass
         else:
-            engine.dispose()
+            # engine.dispose()
+            pass

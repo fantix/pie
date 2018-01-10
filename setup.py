@@ -14,9 +14,11 @@ setuptools.setup(
     packages=setuptools.find_packages(),
 
     install_requires=[
-        'psycopg2==2.7.3.2',
+        'aioredis==1.0.0',
         'alembic==0.9.6',
         'gino',
+        'psycopg2==2.7.3.2',
+        'sanic==0.7.0',
     ],
 
     classifiers=[

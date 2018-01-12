@@ -13,6 +13,9 @@ def get_app():
     from .session.redis import Session
     Session.install(app)
 
+    from .auth.api import init_app
+    init_app(app)
+
     from .auth.login import init_app
     init_app(app)
 

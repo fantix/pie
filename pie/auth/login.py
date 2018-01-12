@@ -1,8 +1,22 @@
+import functools
+
 import sanic
 from sanic.request import Request
 from sanic.response import text
 
 from ..session.redis import Session
+
+
+class Login:
+    pass
+
+
+def load_identity(m):
+    @functools.wraps(m)
+    async def wrapper(request, *args, **kwargs):
+
+        pass
+    return wrapper
 
 
 def init_app(app: sanic.Sanic):

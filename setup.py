@@ -14,8 +14,11 @@ setuptools.setup(
     packages=setuptools.find_packages(),
 
     install_requires=[
+        'aiohttp==2.3.7',
         'aioredis==1.0.0',
         'alembic==0.9.6',
+        'aliyun-python-sdk-core-v3==0.5.5',
+        'argon2-cffi==16.3.0',
         'gino',
         'psycopg2==2.7.3.2',
         'sanic==0.7.0',
@@ -24,10 +27,7 @@ setuptools.setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )

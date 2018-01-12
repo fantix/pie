@@ -8,6 +8,7 @@ import time
 import aioredis
 
 from . import base
+from ..utils import retry_on
 
 
 DATA = b'\x00'
@@ -53,19 +54,6 @@ def script(m):
             return await self._app.redis.evalsha(sha1, keys, args)
         except NoScriptError:
             return await self._app.redis.eval(text, keys, args)
-    return wrapper
-
-
-def retried(m):
-    @functools.wraps(m)
-    async def wrapper(*args, **kwargs):
-        for count in range(2):
-            try:
-                return await m(*args, **kwargs)
-            except RetryError:
-                if count > 0:
-                    raise
-        assert False
     return wrapper
 
 
@@ -146,7 +134,7 @@ end
 return rv
 '''
 
-    @retried
+    @retry_on(RetryError)
     async def _new_session(self):
         rv = hashlib.sha3_256(os.urandom(32)).hexdigest()
         selector, validator = self._split(rv)
@@ -181,7 +169,7 @@ end
 return rv
 '''
 
-    @retried
+    @retry_on(RetryError)
     async def _new_session_id(self):
         rv = self._session_id[:32] + hashlib.shake_128(
             os.urandom(16)).hexdigest(16)

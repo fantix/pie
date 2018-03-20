@@ -4,37 +4,36 @@ import os
 from datetime import datetime, timedelta
 from enum import Enum
 
-import sqlalchemy as sa
 from asyncpg import UniqueViolationError
-from gino.orm.json_support import StringProperty
+from gino.json_support import StringProperty
 from sqlalchemy.dialects.postgresql import JSONB
 
-from ..db import Model
+from ..db import db
 from ..utils import retry_on
 
 
-class User(Model):
+class User(db.Model):
     __tablename__ = 'users'
 
-    id = sa.Column(sa.BigInteger(), primary_key=True)
-    email = sa.Column(sa.Unicode(), index=True, unique=True)
-    password = sa.Column(sa.Unicode())
-    profile = sa.Column(JSONB(), nullable=False, server_default='{}')
+    id = db.Column(db.BigInteger(), primary_key=True)
+    email = db.Column(db.Unicode(), index=True, unique=True)
+    password = db.Column(db.Unicode())
+    profile = db.Column(JSONB(), nullable=False, server_default='{}')
 
 
-class Token(Model):
+class Token(db.Model):
     __tablename__ = 'tokens'
 
-    class Actions(Enum):
+    class Actions:
         login = 'login'
 
-    id = sa.Column(sa.BigInteger(), primary_key=True)
-    selector = sa.Column(sa.Unicode(), nullable=False, index=True, unique=True)
-    validator = sa.Column(sa.Unicode(), nullable=False)
-    created_at = sa.Column(sa.DateTime(), nullable=False)
-    expires_at = sa.Column(sa.DateTime(), nullable=False)
-    used_at = sa.Column(sa.DateTime())
-    profile = sa.Column(JSONB(), nullable=False, server_default='{}')
+    id = db.Column(db.BigInteger(), primary_key=True)
+    selector = db.Column(db.Unicode(), nullable=False, index=True, unique=True)
+    validator = db.Column(db.Unicode(), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False)
+    expires_at = db.Column(db.DateTime(), nullable=False)
+    used_at = db.Column(db.DateTime())
+    profile = db.Column(JSONB(), nullable=False, server_default='{}')
     action = StringProperty()
     email = StringProperty()
 
@@ -58,7 +57,7 @@ class Token(Model):
         selector, validator = cls._split(token)
         rv = await cls.query.where(
             cls.selector == selector,
-        ).with_for_update().execute().first()
+        ).with_for_update().gino.first()
         if rv and (rv.validator != validator or
                    rv.used_at or
                    datetime.utcnow() > rv.expires_at):

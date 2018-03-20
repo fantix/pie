@@ -1,6 +1,7 @@
 from sanic import response
 
 from ..services.aliyun.dm import send_single
+from ..db import db
 from .api import bp
 from .models import Token
 
@@ -8,7 +9,7 @@ from .models import Token
 @bp.route('/email')#, methods=['POST'])
 async def email_login(request):
     email = request.args.get('email')
-    async with request.app.engine.begin():
+    async with db.transaction():
         token = await Token.new(email=email, action=Token.Actions.login)
     await send_single(email, '登录 PIE', '', f'''\
 <html>

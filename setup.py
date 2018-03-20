@@ -17,7 +17,7 @@ setuptools.setup(
         'aiohttp==2.3.7',
         'aioredis==1.0.0',
         'alembic==0.9.6',
-        'aliyun-python-sdk-core-v3==0.5.5',
+        'aliyun-python-sdk-core-v3==2.8.6',
         'argon2-cffi==16.3.0',
         'gino',
         'psycopg2==2.7.3.2',

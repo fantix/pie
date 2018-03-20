@@ -1,28 +1,11 @@
 import sanic
-import sqlalchemy as sa
-from gino import declarative_base
+from gino.ext.sanic import Gino
 
-metadata = sa.MetaData()
-Model = declarative_base(metadata)
+db = Gino()
 
 
 def init_app(app: sanic.Sanic):
     from .auth import models
 
-    # noinspection PyShadowingNames
-    @app.listener('before_server_start')
-    async def before_server_start(app: sanic.Sanic, loop):
-        metadata.bind = app.engine = await sa.create_engine(
-            'asyncpg://localhost/pie', strategy='gino', min_size=0, loop=loop)
-
-    # noinspection PyShadowingNames
-    @app.listener('after_server_stop')
-    async def after_server_stop(app, _):
-        try:
-            engine = getattr(app, 'engine')
-            delattr(app, 'engine')
-        except AttributeError:
-            pass
-        else:
-            # engine.dispose()
-            pass
+    app.config.setdefault('DB_DATABASE', 'pie')
+    db.init_app(app)

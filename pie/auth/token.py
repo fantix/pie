@@ -3,6 +3,7 @@ from sanic import response
 from .api import bp
 from .models import User, Token
 from ..session.redis import Session
+from ..db import db
 
 _actions = {}
 
@@ -19,7 +20,7 @@ async def login(request, token: Token):
         conditions.append(User.email == token.email)
     if not conditions:
         return response.json(dict(success=False))
-    u = await User.query.where(*conditions).execute().first()
+    u = await User.query.where(*conditions).gino.first()
     if u:
         session = await Session.of(request)
         session.set('uid', u.id)
@@ -30,7 +31,7 @@ async def login(request, token: Token):
 
 @bp.get('/token/<token:[a-fA-F0-9]{64}>')
 async def token_login(request, token):
-    async with request.app.engine.begin():
+    async with db.transaction():
         token = await Token.verify(token.lower())
         if token is None:
             return response.text('invalid')

@@ -15,9 +15,9 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+# noinspection PyUnresolvedReferences
 from pie.entry import app
-from pie.db import metadata
-target_metadata = metadata
+from pie.db import db as target_metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
